@@ -67,9 +67,13 @@ class AbstractNtlmAuthHandler:
             r.fp = None # remove the reference to the socket, so that it can not be closed by the response object (we want to keep the socket open)
             auth_header_value = r.getheader(auth_header_field, None)
             (ServerChallenge, NegotiateFlags) = ntlm.parse_NTLM_CHALLENGE_MESSAGE(auth_header_value[5:])
-            user_parts = user.split('\\', 1)
-            DomainName = user_parts[0].upper()
-            UserName = user_parts[1]
+            if '\\' in user:
+                user_parts = user.split('\\', 1)
+                DomainName = user_parts[0].upper()
+                UserName = user_parts[1]
+            else:
+                DomainName = ''
+                UserName = user
             auth = 'NTLM %s' % ntlm.create_NTLM_AUTHENTICATE_MESSAGE(ServerChallenge, UserName, DomainName, pw, NegotiateFlags)
             headers[self.auth_header] = auth
             headers["Connection"] = "Close"
