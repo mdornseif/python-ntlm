@@ -17,6 +17,7 @@ import string
 import des
 import hashlib
 import hmac
+import md4
 import random
 from socket import gethostname
 
@@ -393,10 +394,32 @@ def create_LM_hashed_password_v1(passwd):
 
     return res
 
-def create_NT_hashed_password_v1(passwd, user=None, domain=None):
+def str2unicode(string):
+    "converts ascii string to dumb unicode"
+    res = ''
+    for i in string:
+        res = res + i + '\000'
+    return res
+
+def create_NT_hashed_password(passwd):
     "create NT hashed password"
-    digest = hashlib.new('md4', passwd.encode('utf-16le')).digest()
-    return digest
+
+    # we have to have UNICODE password
+    pw = str2unicode(passwd)
+
+    # do MD4 hash
+    res = md4_hash(pw)
+
+    # addig zeros to get 21 bytes string
+    res = res + '\000\000\000\000\000'
+
+    return res
+
+def md4_hash(pw):
+    md4_context = md4.new()
+    md4_context.update(pw)
+    res = md4_context.digest()
+    return res
 
 def create_NT_hashed_password_v2(passwd, user, domain):
     "create NT hashed password"
@@ -406,7 +429,8 @@ def create_NT_hashed_password_v2(passwd, user, domain):
     return digest
 
 def create_sessionbasekey(password):
-    return hashlib.new('md4', create_NT_hashed_password_v1(password)).digest()
+    # do MD4 hash
+    return md4_hash(create_NT_hashed_password_v1(password))
 
 if __name__ == "__main__":
     def ByteToHex( byteStr ):
