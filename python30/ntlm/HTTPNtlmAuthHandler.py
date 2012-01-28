@@ -2,12 +2,12 @@
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation, either
 # version 3 of the License, or (at your option) any later version.
- 
+
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library.  If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
 
@@ -20,7 +20,7 @@ except ValueError:
     import ntlm
 
 class AbstractNtlmAuthHandler:
-    
+
     def __init__(self, password_mgr=None):
         if password_mgr is None:
             password_mgr = HTTPPasswordMgr()
@@ -44,7 +44,7 @@ class AbstractNtlmAuthHandler:
             if req.headers.get(self.auth_header, None) == auth:
                 return None
             headers[self.auth_header] = auth
-            
+
             host = req.get_host()
             if not host:
                 raise urllib.request.URLError('no host given')
@@ -61,7 +61,7 @@ class AbstractNtlmAuthHandler:
             r.begin()
             r._safe_read(int(r.getheader('content-length')))
             try:
-                if r.getheader('set-cookie'): 
+                if r.getheader('set-cookie'):
                     # this is important for some web applications that store authentication-related info in cookies (it took a long time to figure out)
                     headers['Cookie'] = r.getheader('set-cookie')
             except TypeError:
@@ -86,7 +86,7 @@ class AbstractNtlmAuthHandler:
                 return addinfourl(response, response.msg, req.get_full_url())
             except socket.error as err:
                 raise urllib.request.URLError(err)
-        else:  
+        else:
             return None
 
 
@@ -99,8 +99,8 @@ class HTTPNtlmAuthHandler(AbstractNtlmAuthHandler, urllib.request.BaseHandler):
 
 
 class ProxyNtlmAuthHandler(AbstractNtlmAuthHandler, urllib.request.BaseHandler):
-    """ 
-        CAUTION: this class has NOT been tested at all!!! 
+    """
+        CAUTION: this class has NOT been tested at all!!!
         use at your own risk
     """
     auth_header = 'Proxy-authorization'
@@ -118,13 +118,13 @@ if __name__ == "__main__":
     auth_basic = urllib.request.HTTPBasicAuthHandler(passman)
     auth_digest = urllib.request.HTTPDigestAuthHandler(passman)
     auth_NTLM = HTTPNtlmAuthHandler(passman)
-    
+
     # disable proxies (just for testing)
-    proxy_handler = urllib.request.ProxyHandler({}) 
+    proxy_handler = urllib.request.ProxyHandler({})
 
     opener = urllib.request.build_opener(proxy_handler, auth_NTLM) #, auth_digest, auth_basic)
-    
+
     urllib.request.install_opener(opener)
-    
+
     response = urllib.request.urlopen(url)
     print((response.read()))

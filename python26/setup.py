@@ -11,14 +11,14 @@ DEPENDENCIES = []
 
 if sys.version_info < ( 2,5 ):
     DEPENDENCIES.append( "hashlib" )
-    
+
 setup(name='python-ntlm',
       version='1.0.1',
       description='Python library that provides NTLM support, including an authentication handler for urllib2.',
       long_description="""
       This package allows Python clients running on any operating
       system to provide NTLM authentication to a supporting server.
-      
+
       python-ntlm is probably most useful on platforms that are not
       Windows, since on Windows it is possible to take advantage of
       platform-specific NTLM support.""",

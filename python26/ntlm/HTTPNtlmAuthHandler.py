@@ -7,7 +7,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library.  If not, see <http://www.gnu.org/licenses/> or <http://www.gnu.org/licenses/lgpl.txt>.
 
@@ -100,8 +100,8 @@ class HTTPNtlmAuthHandler(AbstractNtlmAuthHandler, urllib2.BaseHandler):
 
 
 class ProxyNtlmAuthHandler(AbstractNtlmAuthHandler, urllib2.BaseHandler):
-    """ 
-        CAUTION: this class has NOT been tested at all!!! 
+    """
+        CAUTION: this class has NOT been tested at all!!!
         use at your own risk
     """
     auth_header = 'Proxy-authorization'
@@ -130,4 +130,3 @@ if __name__ == "__main__":
 
     response = urllib2.urlopen(url)
     print(response.read())
-

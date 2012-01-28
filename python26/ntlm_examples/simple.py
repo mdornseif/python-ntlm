@@ -4,10 +4,12 @@ import os
 import sys
 
 def main():
-    assert len( sys.argv ) == 3, "Usage %s <password> <url>" % sys.argv[0]
+    assert len( sys.argv ) == 3, "Usage %s <password> <url> [user]" % sys.argv[0]
     user = '%s\%s' % ( os.environ["USERDOMAIN"], os.environ["USERNAME"] )
     password = sys.argv[1]
     url = sys.argv[2]
+    if (len(sys.argv) > 3):
+        url = sys.argv[3]
     
     passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
     passman.add_password(None, url, user, password)
@@ -21,3 +23,6 @@ def main():
     # retrieve the result
     response = urllib2.urlopen(url)
     print(response.read())
+
+if __name__ == '__main__':
+    main()
